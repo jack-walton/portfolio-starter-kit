@@ -125,6 +125,11 @@ pre::-webkit-scrollbar {
   display: none;
 }
 
+img {
+  @apply px-1 py-0.5 rounded-lg border border-neutral-200 dark:border-neutral-900 overflow-hidden;
+}
+
+
 pre {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
