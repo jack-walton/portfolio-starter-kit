@@ -1,0 +1,130 @@
+---
+title: 'Hello World: How I Made This Website'
+publishedAt: '2025-07-29'
+summary: 'I outline the process I used to design, develop, and deploy this website.'
+---
+
+I have wanted to develop a personal website for sometime now.
+
+
+
+I used generative AI to alter the posts component to truncate the date when it gets too long. I had to go through a few iterations, but I ended up with results that I liked.
+
+![The date doesn't look good.](/images/bad-date.png "Optional title")
+
+![The date looks good.](/images/good-date.png "Optional title")
+
+As you can see, the original code for the BlogPosts component displayed the date based data imported from a utility that processes the post's metadata:
+
+```tsx
+import Link from 'next/link'
+import { formatDate, getBlogPosts } from 'app/blog/utils'
+
+export function BlogPosts() {
+  let allBlogs = getBlogPosts()
+
+  return (
+    <div>
+      {allBlogs
+        .sort((a, b) => {
+          if (
+            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
+          ) {
+            return -1
+          }
+          return 1
+        })
+        .map((post) => (
+          <Link
+            key={post.slug}
+            className="flex flex-col space-y-1 mb-4"
+            href={`/blog/${post.slug}`}
+          >
+            <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2">
+              <p className="text-neutral-600 dark:text-neutral-400 w-[100px] tabular-nums">
+                {formatDate(post.metadata.publishedAt, false)}
+              </p>
+              <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">
+                {post.metadata.title}
+              </p>
+            </div>
+          </Link>
+        ))}
+    </div>
+  )
+}
+```
+
+I changed it to this:
+```tsx
+import Link from 'next/link'
+import { getBlogPosts } from 'app/blog/utils'
+
+export function BlogPosts() {
+  let allBlogs = getBlogPosts()
+
+  // Custom date formatting function to handle truncation and correct date parsing
+  const formatCustomDate = (dateString) => {
+    // Parse ISO date string (e.g., "2025-08-01")
+    const [year, month, day] = dateString.split('-').map(Number);
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const shortMonthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    // Use zero-based month index correctly (month - 1 for array access)
+    const fullDate = `${monthNames[month - 1]} ${day}, ${year}`;
+    
+    // Truncate to short month if date string is longer than 10 characters
+    if (fullDate.length > 10) {
+      return `${shortMonthNames[month - 1]} ${day}, ${year}`;
+    }
+    return fullDate;
+  };
+
+  return (
+    <div>
+      {allBlogs
+        .sort((a, b) => {
+          if (
+            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
+          ) {
+            return -1
+          }
+          return 1
+        })
+        .map((post) => (
+          <Link
+            key={post.slug}
+            className="flex flex-col space-y-1 mb-4"
+            href={`/blog/${post.slug}`}
+          >
+            <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2">
+              <p className="text-neutral-600 dark:text-neutral-400 w-[100px] tabular-nums">
+                {formatCustomDate(post.metadata.publishedAt)}
+              </p>
+              <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">
+                {post.metadata.title}
+              </p>
+            </div>
+          </Link>
+        ))}
+    </div>
+  )
+}
+```
+
+Another issue that I faced that the template for this blog couldn't handle out-of-the-box was images in the blog posts. After some quick desk research, I learned that next.js apps need a `public` folder to store these assets. I created one and added the images that you see on this page to it. But I didn't like the way they were styled. The background from the images blended in with the app's UI, so I needed to implement a border. I decided the most consistent way to achieve this would be to create a CSS rule in the global stylesheet for the `img` element that reflected the style of the code blocks. Thus, I implemented the following CSS rule:
+
+```css
+img {
+  @apply px-1 py-0.5 rounded-lg border border-neutral-200 dark:border-neutral-900 overflow-hidden;
+}
+```
+
+As you can see, this enhancement worked as expected. The `img` elements now have a border that matches the border from the `pre` elements.
+
+Finally, I wasn't sure whether the width of the blog content was good. It seemed rather narrow, and it caused the code blocks to overflow. I compared this to [DHH's blog](https://world.hey.com/dhh/the-6-hours-of-lex-888cbf16).
