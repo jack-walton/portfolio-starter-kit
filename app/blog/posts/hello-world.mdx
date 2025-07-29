@@ -128,3 +128,15 @@ img {
 As you can see, this enhancement worked as expected. The `img` elements now have a border that matches the border from the `pre` elements.
 
 Finally, I wasn't sure whether the width of the blog content was good. It seemed rather narrow, and it caused the code blocks to overflow. I compared this to [DHH's blog](https://world.hey.com/dhh/the-6-hours-of-lex-888cbf16).
+
+A problem that I suspected the app may have in terms of readability was how long the list of blog posts would be. I was concerned that the `BlogPosts` component would simply display every post on the home page as well on the actual blog page. To test this, I added several blank posts to the `posts` folder. As I feared, all the posts were displayed.
+
+![The date looks good.](/images/too-many-blog-posts.png "Optional title")
+
+I viewed this as a problem. I wanted the home page to be brief and scannable, and an endless list of posts would impede that. The user would have to know to scroll to the bottom to see the social links, which I wanted to be fairly face up on the home page. My solution to this was to run the code by Grok once more. This time, I asked the AI to alter the `posts` component to return two separate React components: the original `BlogPosts` component that displays every post, and a second component, `RecentBlogPosts` that only displays the three most recent. I received the updated code and updated the app so that the original component was only routed to the "Blog" page and the new, truncated component would route to the Home page. The enhancement was a success. Only the three most recent blog posts would be displayed on the home page.
+
+![The date looks good.](/images/enough-blog-posts.png "Optional title")
+
+But if the user selects the "blog" page, all of the posts are displayed.
+
+![The date looks good.](/images/all-the-blog-posts.png "Optional title")
