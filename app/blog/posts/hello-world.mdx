@@ -12,6 +12,10 @@ I have wanted to develop a personal website for sometime now. In the past, when 
 
 I decided to purchase jackwalton.xyz and create a personal website. I wanted it to be versatile. So in terms of content design, I decided to aim for something between [the personal website for my organization's vice president](https://darmourdesign.com/) and a [linktree for a social media personality](https://linktr.ee/tyler02020202).
 
+After some research, I decided to host my website on Vercel. I had tried other options such as GitHub Pages. But I found GitHub Pages to be too open ended. I found it daunting to build a professional-looking website totally from scratch. In the end, I don't really consider myself an engineer. But at the same time, I didn't want to use a totally drag-and-drop solution such as Wordpress or what have you. I work in the tech industry, so even if I'm not prepared to design a web application from the ground up, I wanted to at least demonstrate that I could work on it enough to customize the front end content. Vercel worked for me because it provides a full web hosting solution along with templates. I decided to deploy a clone of the [portfolio starter kit](https://vercel.com/templates/portfolio/portfolio-starter-kit) and start to customize it.
+
+I learned how Next.js and React worked pretty quickly. The web apps I work with at Oracle aren't exactly React applications, but the concepts are basically the same and I didn't really find the learning curve that steep. I began to change out the text in the website so that it was about me and I wired up the social media links with my own sites. But I had a couple of deeper issues with the design and logic of the template application that required that I get under the hood a bit.
+
 I used generative AI to alter the posts component to truncate the date when it gets too long. I had to go through a few iterations, but I ended up with results that I liked.
 
 ![The date doesn't look good.](/images/bad-date.png "Optional title")
@@ -130,8 +134,6 @@ img {
 ```
 
 As you can see, this enhancement worked as expected. The `img` elements now have a border that matches the border from the `pre` elements.
-
-Finally, I wasn't sure whether the width of the blog content was good. It seemed rather narrow, and it caused the code blocks to overflow. I compared this to [DHH's blog](https://world.hey.com/dhh/the-6-hours-of-lex-888cbf16).
 
 A problem that I suspected the app may have in terms of readability was how long the list of blog posts would be. I was concerned that the `BlogPosts` component would simply display every post on the home page as well on the actual blog page. To test this, I added several blank posts to the `posts` folder. As I feared, all the posts were displayed.
 
