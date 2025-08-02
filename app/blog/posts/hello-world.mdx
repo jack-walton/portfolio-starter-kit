@@ -6,23 +6,27 @@ summary: 'I outline the process I used to design, develop, and deploy this websi
 
 ## Problem
 
-I have wanted to develop a personal website for sometime now. In the past, when I've applied for or interviewed for jobs, I had been asked for an online portfolio, and I didn't have a ready solution for the request. Socially, I've found myself in the situation where acquaintances have asked for my socials, and we go through the awkward process of trying to find a social media platform that we both use. I felt that I needed a single source of truth that strangers could use to learn more about me.
+I have wanted to develop a personal website for some time now. In the past, when I've applied for or interviewed for jobs, I was asked for an online portfolio, and I didn't have a ready solution for the request. For example, I once had an interview with a notable video game company where the recruiter uneasily repeated the phrase "learn more about you than what's on your resume" several times with a chuckle and a raised eyebrow. In another interview process with a prominent Seattle-based tech company, I received a rejection letter within 12 hours of submitting my hastily thrown together portfolio, although the phone interview had gone very well.
+
+Socially, I've found myself in the situation where acquaintances have asked for my socials, and we go through the awkward process of trying to find a social media platform that we both use. In short, I felt that I needed a single source of truth that strangers could use to learn more about me, what kind of work I do, and how to reach me.
 
 ## Solution
 
-I decided to purchase jackwalton.xyz and create a personal website. I wanted it to be versatile. So in terms of content design, I decided to aim for something between [the personal website for my organization's vice president](https://darmourdesign.com/) and a [linktree for a social media personality](https://linktr.ee/tyler02020202).
+I decided to purchase jackwalton.xyz and create a personal website. I wanted it to be versatile. So in terms of content design, I decided to aim for something between [the personal website for my organization's vice president](https://darmourdesign.com/) and a [linktree for an artist](https://linktr.ee/marissanadler).
 
-After some research, I decided to host my website on Vercel. I had tried other options such as GitHub Pages. But I found GitHub Pages to be too open ended. I found it daunting to build a professional-looking website totally from scratch. In the end, I don't really consider myself an engineer. But at the same time, I didn't want to use a totally drag-and-drop solution such as Wordpress or what have you. I work in the tech industry, so even if I'm not prepared to design a web application from the ground up, I wanted to at least demonstrate that I could work on it enough to customize the front end content. Vercel worked for me because it provides a full web hosting solution along with templates. I decided to deploy a clone of the [portfolio starter kit](https://vercel.com/templates/portfolio/portfolio-starter-kit) and start to customize it.
+After some research, I decided to host my website on Vercel. I had tried other options such as GitHub Pages. But I found GitHub Pages to be too open ended. I found it daunting to build a professional-looking website totally from scratch. In the end, I don't really consider myself an engineer. But at the same time, I didn't want to use a totally drag-and-drop solution such as Wordpress or what have you. I work in the tech industry, so even if I'm not prepared to design a web application from the ground up, I wanted to at least demonstrate that I could customize the front end content. Vercel worked for me because it provides a full web hosting solution along with templates. I decided to deploy a clone of the [portfolio starter kit](https://vercel.com/templates/portfolio/portfolio-starter-kit) customize it.
 
-I learned how Next.js and React worked pretty quickly. The web apps I work with at Oracle aren't exactly React applications, but the concepts are basically the same and I didn't really find the learning curve that steep. I began to change out the text in the website so that it was about me and I wired up the social media links with my own sites. But I had a couple of deeper issues with the design and logic of the template application that required that I get under the hood a bit.
+I learned how Next.js and React worked pretty quickly. The web apps I work with at Oracle aren't exactly React applications, but the concepts are basically the same and I didn't really find the learning curve that steep. I began to change out the text in the website so that it was about me and I wired up the social media links with my own sites. But I had a couple of deeper issues with the design and logic of the application that required that I get under the hood a bit.
 
-I used generative AI to alter the posts component to truncate the date when it gets too long. I had to go through a few iterations, but I ended up with results that I liked.
+### The Blog Dates Were Displayed Unevenly
 
-![The date doesn't look good.](/images/bad-date.png "Optional title")
+The first thing I noticed as I began to experiment with the template was that the dates next to the blog posts were sometimes displayed unevenly. Depending on the size of the screen, the date was typically displayed on one line and the title of the post on another. But I noticed that if the date exceeded a certain character count, the date would wrap around on two lines. I didn't really like how this looked. Also, I felt like it made it harder to read the website, as the layout wouldn't necessarily be uniform.
 
-![The date looks good.](/images/good-date.png "Optional title")
+![The date wraps around on two lines.](/images/bad-date.png)
 
-As you can see, the original code for the BlogPosts component displayed the date based data imported from a utility that processes the post's metadata:
+At first, I tried to alter the CSS rules related to the blog posts to try to fix this issue. But, again, I didn't really like the results. And I couldn't really fix the the issue that way without completely redesigning the entire application, which would sort of defeat the purpose of using a template. 
+
+Eventually, I decided to alter the React component that displayed the blog posts. Each blog post is accompanied by metadata that includes the title and date. The original code for the `BlogPosts` component displayed the date based on data imported from a utility that processes the post's metadata:
 
 ```tsx
 import Link from 'next/link'
@@ -63,6 +67,7 @@ export function BlogPosts() {
 }
 ```
 
+I used generative AI to alter the posts component to truncate the date when it gets too long. I had to go through a few iterations, but I ended up with results that I liked.
 I changed it to this:
 ```tsx
 import Link from 'next/link'
@@ -125,6 +130,15 @@ export function BlogPosts() {
 }
 ```
 
+![The date is displayed on one line.](/images/good-date.png)
+
+
+
+
+
+
+### The Template Wasn't Prepared to Display Images
+
 Another issue that I faced that the template for this blog couldn't handle out-of-the-box was images in the blog posts. After some quick desk research, I learned that next.js apps need a `public` folder to store these assets. I created one and added the images that you see on this page to it. But I didn't like the way they were styled. The background from the images blended in with the app's UI, so I needed to implement a border. I decided the most consistent way to achieve this would be to create a CSS rule in the global stylesheet for the `img` element that reflected the style of the code blocks. Thus, I implemented the following CSS rule:
 
 ```css
@@ -135,16 +149,18 @@ img {
 
 As you can see, this enhancement worked as expected. The `img` elements now have a border that matches the border from the `pre` elements.
 
+### Too Many Blog Posts Were Displayed on the Home Page
+
 A problem that I suspected the app may have in terms of readability was how long the list of blog posts would be. I was concerned that the `BlogPosts` component would simply display every post on the home page as well on the actual blog page. To test this, I added several blank posts to the `posts` folder. As I feared, all the posts were displayed.
 
-![The date looks good.](/images/too-many-blog-posts.png "Optional title")
+![Several blog posts crowd up the screen space.](/images/too-many-blog-posts.png)
 
 I viewed this as a problem. I wanted the home page to be brief and scannable, and an endless list of posts would impede that. The user would have to know to scroll to the bottom to see the social links, which I wanted to be fairly face up on the home page. My solution to this was to run the code by Grok once more. This time, I asked the AI to alter the `posts` component to return two separate React components: the original `BlogPosts` component that displays every post, and a second component, `RecentBlogPosts` that only displays the three most recent. I received the updated code and updated the app so that the original component was only routed to the "Blog" page and the new, truncated component would route to the Home page. The enhancement was a success. Only the three most recent blog posts would be displayed on the home page.
 
-![The date looks good.](/images/enough-blog-posts.png "Optional title")
+![Only the three most recent blog posts are displayed.](/images/enough-blog-posts.png)
 
 But if the user selects the "blog" page, all of the posts are displayed.
 
-![The date looks good.](/images/all-the-blog-posts.png "Optional title")
+![All the blog posts are displayed on the "blog" page.](/images/all-the-blog-posts.png)
 
 This is an improvement in terms of readability. All the content of the home page is visible without scrolling on my iPhone 14.
