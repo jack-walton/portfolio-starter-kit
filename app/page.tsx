@@ -7,7 +7,7 @@ export default function Page() {
         Jack Spencer Walton
       </h1>
       <p className="mb-4">
-        {`I am a writer, researcher, and content designer from Kansas City.`}
+        {`I'm a writer, researcher, and content designer from Kansas City.`}
       </p>
       <div className="my-8">
         <RecentBlogPosts />
